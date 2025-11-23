@@ -52,21 +52,24 @@ Repositorio con 2 proyectos Laravel:
 
 4. Configurar la base de datos MySql en .env
 
-    DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
-    DB_PORT=3306
-    DB_DATABASE=nombre_base_de_datos
-    DB_USERNAME=tu_usuario
-    DB_PASSWORD=tu_password
+    - DB_CONNECTION=mysql
+    - DB_HOST=127.0.0.1
+    - DB_PORT=3306
+    - DB_DATABASE=nombre_base_de_datos
+    - DB_USERNAME=tu_usuario
+    - DB_PASSWORD=tu_password
+
 
 5. Generar key y ejecutar migraciones
 
-    php artisan key:generate
-    php artisan migrate
+    - php artisan key:generate
+    - php artisan migrate
 
 6. Levantar el microservicio en el puerto 8000
 
     php artisan serve --host=0.0.0.0 --port=8000
+
+    - En host= (ingresar su ip)
 
 
 ### 2.2. Pruebas en Postman (Autenticación)
@@ -87,7 +90,9 @@ Repositorio con 2 proyectos Laravel:
 
 {
   "name": "Adriana Borja",
+
   "email": "adriana@example.com",
+
   "password": "123456"
 }
 
@@ -107,6 +112,7 @@ Repositorio con 2 proyectos Laravel:
 
 {
   "email": "adriana@example.com",
+
   "password": "123456"
 }
 
@@ -166,20 +172,20 @@ NOTA: para realizar el CRUD debe colocar los headers antes mencionados de Accept
 
 2. En Postman:
 
-- (Opcional) Registrar usuario.
+    - (Opcional) Registrar usuario.
 
-- Hacer login y copiar el token.
+    - Hacer login y copiar el token.
 
-- Probar /api/validate-token con ese token.
+    - Probar /api/validate-token con ese token.
 
 3. Iniciar microservicio de posts (puerto 8001).
 
 4. En Postman, usando siempre Authorization: Bearer TOKEN:
 
-- Probar GET /api/posts.
+    - Probar GET /api/posts.
 
-- Crear un post con POST /api/posts.
+    - Crear un post con POST /api/posts.
 
-- Ver, actualizar y eliminar posts por ID.
+    - Ver, actualizar y eliminar posts por ID.
 
-Con esto ya se pueden ejecutar y comprobar todos los requisitos del examen usando Postman en ambos microservicios.
+Con esto ya se pueden ejecutar y comprobar todos los requisitos usando Postman en ambos microservicios.
