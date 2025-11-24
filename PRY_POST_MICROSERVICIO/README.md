@@ -7,53 +7,306 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# PRUEBA_PARCIAL_1_ARQUITECTURA_SOFTWARE
+Implementación de un CRUD de Posts mediante Arquitectura de Microservicios con Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Autores:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Borja Diaz Adriana Maribel (adryborja95)
+- Ojeda Tello Amy Lizett (amyyy03)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+# Microservicios Laravel: Autenticación y Posts
 
-## Learning Laravel
+Repositorio con 2 proyectos Laravel:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- `PRY_AUTENTICACION_MICROSERVICIO` → login, registro y validación de tokens (MySQL).
+- `PRY_POST_MICROSERVICIO` → CRUD de posts protegido usando el token (PostgreSQL).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+> En los ejemplos se usa la IP `192.168.100.31`, puerto **8000** para autenticación y **8001** para posts.  
+> Cambia la IP/puertos según tu entorno.
 
-## Laravel Sponsors
+## 1. Requisitos previos
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- PHP 8.x
+- Composer
+- MySQL (para autenticación)
+- PostgreSQL (para posts)
+- Postman o similar
+- Extensión PDO para MySQL y PostgreSQL habilitadas
 
-### Premium Partners
+## 2. Microservicio de Autenticación (PRY_AUTENTICACION_MICROSERVICIO)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 2.1. Instalación y configuración
 
-## Contributing
+1. Entrar a la carpeta del proyecto:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+   cd PRY_AUTENTICACION_MICROSERVICIO
 
-## Code of Conduct
+2. Instalar dependencias:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    composer install
 
-## Security Vulnerabilities
+3. Crear archivo .env
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    cp .env.example .env
 
-## License
+4. Configurar la base de datos MySql en .env
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    - DB_CONNECTION=mysql
+    - DB_HOST=127.0.0.1
+    - DB_PORT=3306
+    - DB_DATABASE=nombre_base_de_datos
+    - DB_USERNAME=tu_usuario
+    - DB_PASSWORD=tu_password
+
+
+5. Generar key y ejecutar migraciones
+
+    - php artisan key:generate
+    - php artisan migrate
+
+6. Levantar el microservicio en el puerto 8000
+
+    php artisan serve --host=0.0.0.0 --port=8000
+
+    - En host= (ingresar su ip)
+
+
+### 2.2. Pruebas en Postman (Autenticación)
+
+2.2.1. Registrar usuario (opcional)
+
+- Método: POST
+
+- URL: http://192.168.100.31:8000/api/register (cambiar url segun su entorno)
+
+- Headers:
+
+    - Accept: application/json
+
+    - Content-Type: application/json
+
+- Body (JSON):
+
+    {
+    "name": "Adriana Borja",
+
+    "email": "adriana@example.com",
+
+    "password": "123456"
+    }
+
+2.2.2. Login (obtener token)
+
+- Método: POST
+
+- URL: http://192.168.100.31:8000/api/login (cambiar url segun su entorno)
+
+- Headers:
+
+    - Accept: application/json
+
+    - Content-Type: application/json
+
+- Body (JSON):
+
+    {
+    "email": "adriana@example.com",
+
+    "password": "123456"
+    }
+
+En la respuesta copiar el valor de token.
+Ese token se usará como:
+
+- Authorization: Bearer TU_TOKEN
+
+2.2.3. Validar token
+
+- Método: GET
+
+- URL: http://192.168.100.31:8000/api/validate-token (cambiar url segun su entorno)
+
+- Headers:
+
+    - Accept: application/json
+
+    - Authorization: Bearer TU_TOKEN
+
+Debe responder con un JSON indicando que el token es válido y devolver los datos del usuario.
+
+2.2.4. Logout
+
+- Método: POST
+
+- URL: http://192.168.100.31:8000/api/logout
+
+- Headers:
+
+    - Accept: application/json
+
+    - Authorization: Bearer TU_TOKEN
+
+Revoca los tokens del usuario.
+
+Se puede realizar CRUD en este microservicio, para ello ocupar los siguientes URL
+- GET - http://192.168.100.31:8000/api/users (Visualziar todos los usuarios)
+- GET - http://192.168.100.31:8000/api/users/1 (Visualizar usuario por ID)
+- PUT - http://192.168.100.31:8000/api/users/1 (Actualizar información de usuario por ID)
+- DEL - http://192.168.100.31:8000/api/users/1 (Eliminar usuario por ID)
+
+NOTA: para realizar el CRUD debe colocar los headers antes mencionados de Accept y Authorization. En caso de realziar PUT tambipén debera colocar adicional el header Content-Type: application/json
+
+
+## 3. MMicroservicio de Posts (PRY_POST_MICROSERVICIO)
+
+### 3.1. Instalación y configuración
+
+1. Entrar a la carpeta del proyecto:
+
+    cd PRY_POST_MICROSERVICIO
+
+
+2. Instalar dependencias:
+
+    composer install
+
+
+3. Crear archivo .env:
+
+    cp .env.example .env
+
+
+4. Configurar la base de datos PostgreSQL en .env:
+
+    DB_CONNECTION=pgsql
+    DB_HOST=127.0.0.1
+    DB_PORT=5432
+    DB_DATABASE=posts_ms
+    DB_USERNAME=tu_usuario_pg
+    DB_PASSWORD=tu_password_pg
+
+
+5. Ejecutar migraciones (y opcionalmente seeder de posts):
+
+    php artisan key:generate
+    php artisan migrate
+
+6. Verificar que el middleware CheckAuthToken apunta al microservicio de autenticación:
+
+// app/Http/Middleware/CheckAuthToken.php
+
+Http::withToken($token)->get('http://192.168.100.31:8000/api/validate-token');
+
+
+7. Levantar el microservicio en el puerto 8001:
+
+- php artisan serve --host=0.0.0.0 --port=8001
+- En host= (ingresar su ip)
+
+Importante: el microservicio de autenticación debe estar levantado para que CheckAuthToken funcione.
+
+
+### 3.2. Pruebas en Postman (Posts)
+Antes de probar posts, obtener primero un token válido desde el microservicio de autenticación (sección 2.2).
+
+En todas las peticiones al microservicio de posts:
+
+- Headers obligatorios:
+
+    - Accept: application/json
+
+    - Authorization: Bearer TU_TOKEN
+
+#### 3.2.1. Listar posts
+
+Método: GET
+
+- URL: http://192.168.100.31:8001/api/posts
+
+- Devuelve un arreglo de posts.
+
+#### 3.2.2. Crear post
+
+Método: POST
+
+- URL: http://192.168.100.31:8001/api/posts
+
+- Headers:
+
+    - Accept: application/json
+
+    - Content-Type: application/json
+
+    - Authorization: Bearer TU_TOKEN
+
+- Body (JSON):
+
+    {
+    "title": "Mi primer post",
+    "content": "Contenido de prueba para el examen."
+    }
+
+
+El user_id se toma automáticamente del usuario asociado al token.
+
+#### 3.2.3. Ver post por ID
+
+Método: GET
+
+- URL: http://192.168.100.31:8001/api/posts/1
+
+(Usar el ID del post que exista en tu BD.)
+
+#### 3.2.4. Actualizar post
+
+Método: PUT
+
+- URL: http://192.168.100.31:8001/api/posts/1
+
+- Headers:
+
+    - Accept: application/json
+
+    - Content-Type: application/json
+
+    - Authorization: Bearer TU_TOKEN
+
+- Body (JSON):
+
+    {
+    "title": "Mi primer post (editado)",
+    "content": "Contenido actualizado del post."
+    }
+
+#### 3.2.5. Eliminar post
+
+Método: DELETE
+
+- URL: http://192.168.100.31:8001/api/posts/1
+
+
+
+## 4. Flujo recomendado de pruebas
+
+1. Iniciar microservicio de autenticación (puerto 8000).
+
+2. En Postman:
+
+    - (Opcional) Registrar usuario.
+
+    - Hacer login y copiar el token.
+
+    - Probar /api/validate-token con ese token.
+
+3. Iniciar microservicio de posts (puerto 8001).
+
+4. En Postman, usando siempre Authorization: Bearer TOKEN:
+
+    - Probar GET /api/posts.
+
+    - Crear un post con POST /api/posts.
+
+    - Ver, actualizar y eliminar posts por ID.
+
+Con esto ya se pueden ejecutar y comprobar todos los requisitos usando Postman en ambos microservicios.

@@ -88,13 +88,13 @@ Repositorio con 2 proyectos Laravel:
 
 - Body (JSON):
 
-{
-  "name": "Adriana Borja",
+    {
+    "name": "Adriana Borja",
 
-  "email": "adriana@example.com",
+    "email": "adriana@example.com",
 
-  "password": "123456"
-}
+    "password": "123456"
+    }
 
 2.2.2. Login (obtener token)
 
@@ -110,11 +110,11 @@ Repositorio con 2 proyectos Laravel:
 
 - Body (JSON):
 
-{
-  "email": "adriana@example.com",
+    {
+    "email": "adriana@example.com",
 
-  "password": "123456"
-}
+    "password": "123456"
+    }
 
 En la respuesta copiar el valor de token.
 Ese token se usará como:
@@ -162,50 +162,47 @@ NOTA: para realizar el CRUD debe colocar los headers antes mencionados de Accept
 
 ### 3.1. Instalación y configuración
 
-Entrar a la carpeta del proyecto:
+1. Entrar a la carpeta del proyecto:
 
-cd PRY_POST_MICROSERVICIO
-
-
-Instalar dependencias:
-
-composer install
+    cd PRY_POST_MICROSERVICIO
 
 
-Crear archivo .env:
+2. Instalar dependencias:
 
-cp .env.example .env
-
-
-Configurar la base de datos PostgreSQL en .env:
-
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=posts_ms
-DB_USERNAME=tu_usuario_pg
-DB_PASSWORD=tu_password_pg
+    composer install
 
 
-Ejecutar migraciones (y opcionalmente seeder de posts):
+3. Crear archivo .env:
 
-php artisan key:generate
-php artisan migrate
-# opcional: php artisan migrate:fresh --seed
+    cp .env.example .env
 
 
-Verificar que el middleware CheckAuthToken apunta al microservicio de autenticación:
+4. Configurar la base de datos PostgreSQL en .env:
+
+    DB_CONNECTION=pgsql
+    DB_HOST=127.0.0.1
+    DB_PORT=5432
+    DB_DATABASE=posts_ms
+    DB_USERNAME=tu_usuario_pg
+    DB_PASSWORD=tu_password_pg
+
+
+5. Ejecutar migraciones (y opcionalmente seeder de posts):
+
+    php artisan key:generate
+    php artisan migrate
+
+6. Verificar que el middleware CheckAuthToken apunta al microservicio de autenticación:
 
 // app/Http/Middleware/CheckAuthToken.php
+
 Http::withToken($token)->get('http://192.168.100.31:8000/api/validate-token');
 
 
-Levantar el microservicio en el puerto 8001:
+7. Levantar el microservicio en el puerto 8001:
 
-php artisan serve --host=0.0.0.0 --port=8001
-
-
-URL base: http://192.168.100.31:8001
+- php artisan serve --host=0.0.0.0 --port=8001
+- En host= (ingresar su ip)
 
 Importante: el microservicio de autenticación debe estar levantado para que CheckAuthToken funcione.
 
@@ -215,40 +212,40 @@ Antes de probar posts, obtener primero un token válido desde el microservicio d
 
 En todas las peticiones al microservicio de posts:
 
-Headers obligatorios:
+- Headers obligatorios:
 
-Accept: application/json
+    - Accept: application/json
 
-Authorization: Bearer TU_TOKEN
+    - Authorization: Bearer TU_TOKEN
 
 #### 3.2.1. Listar posts
 
 Método: GET
 
-URL: http://192.168.100.31:8001/api/posts
+- URL: http://192.168.100.31:8001/api/posts
 
-Devuelve un arreglo de posts.
+- Devuelve un arreglo de posts.
 
 #### 3.2.2. Crear post
 
 Método: POST
 
-URL: http://192.168.100.31:8001/api/posts
+- URL: http://192.168.100.31:8001/api/posts
 
-Headers:
+- Headers:
 
-Accept: application/json
+    - Accept: application/json
 
-Content-Type: application/json
+    - Content-Type: application/json
 
-Authorization: Bearer TU_TOKEN
+    - Authorization: Bearer TU_TOKEN
 
-Body (JSON):
+- Body (JSON):
 
-{
-  "title": "Mi primer post",
-  "content": "Contenido de prueba para el examen."
-}
+    {
+    "title": "Mi primer post",
+    "content": "Contenido de prueba para el examen."
+    }
 
 
 El user_id se toma automáticamente del usuario asociado al token.
@@ -257,7 +254,7 @@ El user_id se toma automáticamente del usuario asociado al token.
 
 Método: GET
 
-URL: http://192.168.100.31:8001/api/posts/1
+- URL: http://192.168.100.31:8001/api/posts/1
 
 (Usar el ID del post que exista en tu BD.)
 
@@ -265,28 +262,28 @@ URL: http://192.168.100.31:8001/api/posts/1
 
 Método: PUT
 
-URL: http://192.168.100.31:8001/api/posts/1
+- URL: http://192.168.100.31:8001/api/posts/1
 
-Headers:
+- Headers:
 
-Accept: application/json
+    - Accept: application/json
 
-Content-Type: application/json
+    - Content-Type: application/json
 
-Authorization: Bearer TU_TOKEN
+    - Authorization: Bearer TU_TOKEN
 
-Body (JSON):
+- Body (JSON):
 
-{
-  "title": "Mi primer post (editado)",
-  "content": "Contenido actualizado del post."
-}
+    {
+    "title": "Mi primer post (editado)",
+    "content": "Contenido actualizado del post."
+    }
 
 #### 3.2.5. Eliminar post
 
 Método: DELETE
 
-URL: http://192.168.100.31:8001/api/posts/1
+- URL: http://192.168.100.31:8001/api/posts/1
 
 
 

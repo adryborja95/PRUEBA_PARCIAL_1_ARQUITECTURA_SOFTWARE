@@ -28,7 +28,7 @@ class CheckAuthToken
 
         // 2. Llamar al microservicio de autenticación para validar el token
         $response = Http::withToken($token)
-            ->get('http://192.168.100.31:8000/api/validate-token');
+            ->get('http://192.168.1.86:8000/api/validate-token');
 
         // 3. Si la petición falla (token inválido)
         if ($response->failed()) {
